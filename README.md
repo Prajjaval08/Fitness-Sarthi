@@ -1,5 +1,5 @@
-🏋️ FITNESS SAARTHI — Full Stack Build Prompt
-For: Cursor / Codex / Claude Code
+🏋️ FITNESS SAARTHI — Full Stack Build 
+
 ---
 🎯 PROJECT VISION
 Build Fitness Saarthi — a production-grade, AI-powered fitness coaching web application tailored for the Indian market. The app should feel like a premium fitness companion — not a generic gym app. Think smooth glassmorphism + soft neumorphism hybrid UI with fluid micro-animations, deep green and obsidian dark palette, and a confident, motivational personality.
