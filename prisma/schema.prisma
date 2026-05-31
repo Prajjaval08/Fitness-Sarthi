@@ -1,0 +1,182 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum Role {
+  USER
+  TRAINER
+  ADMIN
+}
+
+enum FitnessGoal {
+  WEIGHT_LOSS
+  MUSCLE_GAIN
+  ENDURANCE
+  FLEXIBILITY
+  MAINTENANCE
+}
+
+enum DifficultyLevel {
+  BEGINNER
+  INTERMEDIATE
+  ADVANCED
+}
+
+model User {
+  id              String           @id @default(cuid())
+  name            String
+  email           String           @unique
+  phone           String?          @unique
+  passwordHash    String?
+  avatarUrl       String?
+  role            Role             @default(USER)
+  isVerified      Boolean          @default(false)
+  createdAt       DateTime         @default(now())
+  updatedAt       DateTime         @updatedAt
+  profile         UserProfile?
+  workoutLogs     WorkoutLog[]
+  mealLogs        MealLog[]
+  aiConversations AIConversation[]
+  challenges      UserChallenge[]
+  streak          UserStreak?
+}
+
+model UserProfile {
+  id             String       @id @default(cuid())
+  userId         String       @unique
+  user           User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+  age            Int?
+  gender         String?
+  heightCm       Float?
+  weightKg       Float?
+  targetWeightKg Float?
+  fitnessGoal    FitnessGoal?
+  activityLevel  String?
+  bio            String?
+  city           String?
+  updatedAt      DateTime     @updatedAt
+}
+
+model Exercise {
+  id               String            @id @default(cuid())
+  name             String
+  nameHindi        String?
+  description      String?
+  muscleGroups     String[]
+  equipment        String[]
+  difficulty       DifficultyLevel
+  videoUrl         String?
+  caloriesPerMin   Float?
+  createdAt        DateTime          @default(now())
+  workoutExercises WorkoutExercise[]
+}
+
+model Workout {
+  id            String            @id @default(cuid())
+  title         String
+  description   String?
+  difficulty    DifficultyLevel
+  durationMins  Int
+  category      String
+  thumbnailUrl  String?
+  isAIGenerated Boolean           @default(false)
+  createdAt     DateTime          @default(now())
+  exercises     WorkoutExercise[]
+  logs          WorkoutLog[]
+}
+
+model WorkoutExercise {
+  id          String   @id @default(cuid())
+  workoutId   String
+  exerciseId  String
+  sets        Int
+  reps        Int?
+  durationSec Int?
+  restSec     Int
+  order       Int
+  workout     Workout  @relation(fields: [workoutId], references: [id])
+  exercise    Exercise @relation(fields: [exerciseId], references: [id])
+}
+
+model WorkoutLog {
+  id             String   @id @default(cuid())
+  userId         String
+  workoutId      String
+  completedAt    DateTime @default(now())
+  durationMins   Int
+  caloriesBurned Float?
+  notes          String?
+  rating         Int?
+  user           User     @relation(fields: [userId], references: [id])
+  workout        Workout  @relation(fields: [workoutId], references: [id])
+}
+
+model MealLog {
+  id       String   @id @default(cuid())
+  userId   String
+  loggedAt DateTime @default(now())
+  mealType String
+  foodName String
+  calories Float
+  proteinG Float?
+  carbsG   Float?
+  fatG     Float?
+  portionG Float?
+  user     User     @relation(fields: [userId], references: [id])
+}
+
+model AIConversation {
+  id        String      @id @default(cuid())
+  userId    String
+  title     String?
+  createdAt DateTime    @default(now())
+  updatedAt DateTime    @updatedAt
+  user      User        @relation(fields: [userId], references: [id])
+  messages  AIMessage[]
+}
+
+model AIMessage {
+  id             String         @id @default(cuid())
+  conversationId String
+  role           String
+  content        String
+  createdAt      DateTime       @default(now())
+  conversation   AIConversation @relation(fields: [conversationId], references: [id])
+}
+
+model Challenge {
+  id           String          @id @default(cuid())
+  title        String
+  description  String
+  startDate    DateTime
+  endDate      DateTime
+  goal         String
+  rewardXP     Int
+  participants UserChallenge[]
+}
+
+model UserChallenge {
+  id          String    @id @default(cuid())
+  userId      String
+  challengeId String
+  joinedAt    DateTime  @default(now())
+  progress    Float     @default(0)
+  completed   Boolean   @default(false)
+  user        User      @relation(fields: [userId], references: [id])
+  challenge   Challenge @relation(fields: [challengeId], references: [id])
+}
+
+model UserStreak {
+  id            String    @id @default(cuid())
+  userId        String    @unique
+  currentStreak Int       @default(0)
+  longestStreak Int       @default(0)
+  lastWorkout   DateTime?
+  totalXP       Int       @default(0)
+  user          User      @relation(fields: [userId], references: [id])
+}

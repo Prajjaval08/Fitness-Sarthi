@@ -1,0 +1,25 @@
+import AppShell from "@/components/app-shell"
+import Link from "next/link"
+import { ActivityBars } from "@/components/charts"
+import { Badge, Button, Card, ProgressRing, SectionTitle } from "@/components/ui"
+import { ArrowUpRight, Bot, CalendarDays, Check, Clock3, Dumbbell, Flame, Footprints, Play, Sparkles, Trophy, Zap } from "lucide-react"
+export default function Dashboard(){
+ return <AppShell><div className="mx-auto max-w-[1500px]">
+  <div className="mb-7 flex flex-wrap items-center justify-between gap-3"><div><p className="text-xs text-[#8b9691] md:hidden">Sunday, 31 May</p><h1 className="display text-3xl font-bold">Your Daily <span className="text-[#008b8b]">Momentum</span></h1><p className="mt-1 text-sm text-[#8b9691]">Stay consistent. Every rep takes you closer.</p></div><Button><Zap size={16}/> Generate AI workout</Button></div>
+  <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
+   <Card className="flex items-center gap-4 p-5"><ProgressRing value={68} label="1,360" sublabel="of 2,000 kcal" size={90}/><div><p className="text-xs text-[#8b9691]">Calories today</p><p className="mt-1 text-sm font-bold text-[#008b8b]">68% complete</p></div></Card>
+   <Card className="flex items-center gap-4 p-5"><span className="grid size-[74px] place-items-center rounded-full bg-[#ff6b35]/10"><Flame size={35} className="text-[#ff6b35]"/></span><div><p className="text-xs text-[#8b9691]">Workout streak</p><p className="display text-4xl font-bold">7 <span className="text-base text-[#8b9691]">days</span></p></div></Card>
+   <Card className="p-5"><div className="flex justify-between text-xs text-[#8b9691]"><span>Weekly progress</span><ArrowUpRight size={15} className="text-[#008b8b]"/></div><p className="display mt-2 text-4xl font-bold">82<span className="text-lg text-[#008b8b]">%</span></p><div className="mt-3 h-2 rounded-full bg-white/[.06]"><div className="h-full w-[82%] rounded-full bg-[#008b8b]"/></div></Card>
+   <Card className="p-5"><div className="flex justify-between text-xs text-[#8b9691]"><span>Your level</span><Trophy size={16} className="text-[#f8c94c]"/></div><p className="display mt-2 text-3xl font-bold">HUSTLER <span className="text-sm text-[#f8c94c]">LVL 2</span></p><p className="mt-3 text-[11px] text-[#8b9691]">340 / 600 XP to Warrior</p></Card>
+  </div>
+  <div className="mt-7 grid gap-6 xl:grid-cols-[1.42fr_.9fr]">
+   <div className="space-y-6">
+    <section><SectionTitle eyebrow="Today's mission" title="Upper Body Power"/><Card className="overflow-hidden"><div className="grid md:grid-cols-[.82fr_1fr]"><div className="relative min-h-56 bg-[linear-gradient(90deg,rgba(0,0,0,.05),rgba(0,0,0,.55)),url('https://images.unsplash.com/photo-1534438327276-14e5300c3a48?auto=format&fit=crop&w=900&q=80')] bg-cover bg-center"><Badge><span className="flex items-center gap-1"><Sparkles size={11}/> AI pick</span></Badge></div><div className="p-6"><p className="text-xs text-[#8b9691]">CHEST • SHOULDERS • TRICEPS</p><h3 className="mt-2 display text-3xl font-bold">Build strength. Own the day.</h3><div className="mt-5 flex gap-5 text-xs text-[#a5afab]"><span className="flex gap-2"><Clock3 size={15}/> 45 mins</span><span className="flex gap-2"><Dumbbell size={15}/> 6 exercises</span><span className="flex gap-2"><Zap size={15}/> 320 kcal</span></div><Link href="/workouts/active"><Button className="mt-7 w-full"><Play size={16} fill="currentColor"/> Start workout</Button></Link></div></div></Card></section>
+    <Card className="p-5"><SectionTitle title="Weekly Activity" action={<span className="text-xs text-[#8b9691]">Last 7 days</span>}/><ActivityBars/></Card>
+   </div>
+   <div className="space-y-6"><Card className="p-5"><SectionTitle eyebrow="Nutrition" title="Daily Macros" action={<span className="text-xs text-[#008b8b]">View diet</span>}/><div className="flex justify-around">{[["92g","Protein",64,"#008b8b"],["182g","Carbs",72,"#ff6b35"],["48g","Fats",56,"#f8c94c"]].map(([v,l,p,c]:any)=><ProgressRing key={l} value={p} label={v} sublabel={l} size={92} color={c}/>)}</div></Card>
+   <Card className="p-5"><SectionTitle eyebrow="Community" title="Upcoming Challenge"/><div className="rounded-2xl border border-[#ff6b35]/20 bg-[#ff6b35]/[.06] p-4"><div className="flex items-center justify-between"><span className="grid size-10 place-items-center rounded-xl bg-[#ff6b35]/15 text-[#ff6b35]"><Trophy size={20}/></span><Badge orange>2 days left</Badge></div><p className="mt-4 font-bold">10K Steps Showdown</p><p className="mt-1 text-xs text-[#8b9691]">Walk 70,000 steps this week</p><div className="mt-4 h-1.5 rounded-full bg-white/[.08]"><div className="h-full w-3/4 rounded-full bg-[#ff6b35]"/></div><p className="mt-2 text-[10px] text-[#8b9691]">52,450 / 70,000 steps</p></div></Card>
+   <Card glass className="flex items-center gap-4 p-5"><span className="grid size-12 place-items-center rounded-2xl bg-[#008b8b] text-[#effffe]"><Bot/></span><div className="flex-1"><p className="font-bold">Ask your AI Coach</p><p className="text-xs text-[#8b9691]">Need a modification or meal tip?</p></div><ArrowUpRight size={18} className="text-[#008b8b]"/></Card></div>
+  </div>
+ </div></AppShell>
+}
