@@ -1,5 +1,42 @@
 "use client"
 import Link from "next/link"
-import { ArrowRight, Dumbbell, Eye, LockKeyhole, Mail, Phone } from "lucide-react"
+import { useRouter } from "next/navigation"
+import { useState } from "react"
+import { ArrowRight, Dumbbell, Eye, EyeOff, LockKeyhole, Mail } from "lucide-react"
 import { Button, Card } from "@/components/ui"
-export default function Login(){return <main className="mesh grid min-h-screen place-items-center px-5 py-10"><div className="w-full max-w-md"><Link href="/" className="mb-8 flex justify-center gap-3"><span className="grid size-10 place-items-center rounded-xl bg-[#008b8b] text-[#effffe]"><Dumbbell/></span><span className="display text-xl font-bold leading-4">FITNESS<br/><b className="text-[#008b8b]">SAARTHI</b></span></Link><Card className="p-7"><h1 className="display text-3xl font-bold">Welcome back</h1><p className="mt-1 text-sm text-[#8b9691]">Your strongest self is waiting.</p><button className="mt-7 flex w-full items-center justify-center gap-3 rounded-xl border border-white/[.08] bg-white/[.03] py-3 text-sm font-bold"><b className="text-lg">G</b> Continue with Google</button><div className="my-5 flex items-center gap-3 text-[10px] text-[#68736f]"><i className="h-px flex-1 bg-white/[.07]"/> OR CONTINUE WITH EMAIL <i className="h-px flex-1 bg-white/[.07]"/></div><label className="mb-3 flex items-center gap-3 rounded-xl border border-white/[.07] bg-black/20 px-4 py-3"><Mail size={16} className="text-[#008b8b]"/><input className="w-full bg-transparent text-sm" placeholder="Email address"/></label><label className="flex items-center gap-3 rounded-xl border border-white/[.07] bg-black/20 px-4 py-3"><LockKeyhole size={16} className="text-[#008b8b]"/><input type="password" className="w-full bg-transparent text-sm" placeholder="Password"/><Eye size={15} className="text-[#8b9691]"/></label><div className="mt-4 text-right text-xs text-[#008b8b]">Forgot password?</div><Link href="/dashboard"><Button className="mt-5 w-full">Log in <ArrowRight size={16}/></Button></Link><button className="mt-3 flex w-full items-center justify-center gap-2 py-3 text-xs text-[#a2aca8]"><Phone size={15}/> Log in with phone OTP</button><p className="mt-6 text-center text-xs text-[#8b9691]">New here? <Link href="/register" className="font-bold text-[#008b8b]">Create an account</Link></p></Card></div></main>}
+import { useAuth } from "@/lib/auth-context"
+import { ApiError } from "@/lib/api"
+
+export default function Login(){
+  const router = useRouter()
+  const { login } = useAuth()
+  const [email,setEmail] = useState("")
+  const [password,setPassword] = useState("")
+  const [showPw,setShowPw] = useState(false)
+  const [error,setError] = useState("")
+  const [busy,setBusy] = useState(false)
+
+  async function submit(e: React.FormEvent){
+    e.preventDefault()
+    if(busy) return
+    setError("")
+    setBusy(true)
+    try {
+      await login(email.trim(), password)
+      router.push("/dashboard")
+    } catch(err) {
+      setError(err instanceof ApiError ? err.message : "Something went wrong. Try again.")
+    } finally {
+      setBusy(false)
+    }
+  }
+
+  return <main className="mesh grid min-h-screen place-items-center px-5 py-10"><div className="w-full max-w-md"><Link href="/" className="mb-8 flex justify-center gap-3"><span className="grid size-10 place-items-center rounded-xl bg-[#008b8b] text-[#effffe]"><Dumbbell/></span><span className="display text-xl font-bold leading-4">FITNESS<br/><b className="text-[#008b8b]">SAARTHI</b></span></Link><Card className="p-7"><h1 className="display text-3xl font-bold">Welcome back</h1><p className="mt-1 text-sm text-[#8b9691]">Your strongest self is waiting.</p>
+  <form onSubmit={submit} className="mt-7">
+    {error && <p className="mb-4 rounded-xl border border-[#ff5da2]/30 bg-[#ff5da2]/10 px-4 py-3 text-xs font-bold text-[#ff8ab0]">{error}</p>}
+    <label className="mb-3 flex items-center gap-3 rounded-xl border border-white/[.07] bg-black/20 px-4 py-3"><Mail size={16} className="text-[#008b8b]"/><input value={email} onChange={e=>setEmail(e.target.value)} type="email" required className="w-full bg-transparent text-sm" placeholder="Email address" autoComplete="email"/></label>
+    <label className="flex items-center gap-3 rounded-xl border border-white/[.07] bg-black/20 px-4 py-3"><LockKeyhole size={16} className="text-[#008b8b]"/><input value={password} onChange={e=>setPassword(e.target.value)} type={showPw?"text":"password"} required className="w-full bg-transparent text-sm" placeholder="Password" autoComplete="current-password"/><button type="button" onClick={()=>setShowPw(!showPw)} className="text-[#8b9691] hover:text-white">{showPw?<EyeOff size={15}/>:<Eye size={15}/>}</button></label>
+    <Button type="submit" className="mt-6 w-full" >{busy?"Logging in...":<>Log in <ArrowRight size={16}/></>}</Button>
+  </form>
+  <p className="mt-6 text-center text-xs text-[#8b9691]">New here? <Link href="/register" className="font-bold text-[#008b8b]">Create an account</Link></p></Card></div></main>
+}
